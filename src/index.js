@@ -64,7 +64,7 @@ const createEcsConnection = (credentials) =>
   });
 
 
-async function assumeRoleInAccount() {
+async function assumeRoleInAccount(region) {
   const command = new clientSTS.AssumeRoleCommand({
       RoleArn:  core.getInput('role-to-assume'),
       RoleSessionName: `ecs-wait-action`
@@ -75,7 +75,7 @@ async function assumeRoleInAccount() {
       accessKeyId: assumedRole.Credentials.AccessKeyId,
       secretAccessKey: assumedRole.Credentials.SecretAccessKey,
       sessionToken: assumedRole.Credentials.SessionToken,
-      region: 'us-east-1'
+      region: region
   }
 }
 
@@ -113,7 +113,7 @@ const main = async () => {
   try {
     const params = extractParams();
 
-    const credentials = await assumeRoleInAccount();
+    const credentials = await assumeRoleInAccount(params.region);
 
 
     if (!params) {
